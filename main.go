@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+	"io"
+	"net/http"
+)
+
 func Sum(a int, b int) int {
 	return a + b
 }
@@ -24,4 +30,25 @@ func FilterEven(nums []int) []int {
 		}
 	}
 	return out
+}
+
+func Discount(value int) (int, error) {
+	switch {
+	case value <= 0:
+		return 0, fmt.Errorf("значение меньше 0")
+	case value > 1000:
+		return 10, nil
+	default:
+		return 0, nil
+	}
+}
+
+func GetData(client *http.Client, url string) (string, error) {
+	resp, err := client.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	return string(body), nil
 }
